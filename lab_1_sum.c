@@ -21,7 +21,7 @@ int main(int argc, char* argv[]){
         sleep(2);
         MPI_Wait(&recv_req, MPI_STATUS_IGNORE);
         for(int i = 0; i < 5; i++) {
-            printf(” %d”, data[i]);
+            printf(" %d", data[i]);
         }
     }
     MPI_Finalize();
