@@ -110,6 +110,7 @@ int main(int argc, char *argv[]) {
 					{
 						printf("TOTAL SUM IS %d\n", sum);
 						isExit = true;
+						diff = clock() - start;
 						int msec = diff * 1000 / CLOCKS_PER_SEC;
 						printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
 						for (int j = 1; j < n; j++) {
