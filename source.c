@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <mpi.h>
 #include <math.h>
 #include <time.h>
@@ -44,7 +45,7 @@ int main(int argc, char *argv[]) {
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &n); 
 
-	// добавить проверку, добавить генерацию, получение аргумента со строки
+	// Г¤Г®ГЎГ ГўГЁГІГј ГЇГ°Г®ГўГҐГ°ГЄГі, Г¤Г®ГЎГ ГўГЁГІГј ГЈГҐГ­ГҐГ°Г Г¶ГЁГѕ, ГЇГ®Г«ГіГ·ГҐГ­ГЁГҐ Г Г°ГЈГіГ¬ГҐГ­ГІГ  Г±Г® Г±ГІГ°Г®ГЄГЁ
 
 	if (n == 1) 
 	{
