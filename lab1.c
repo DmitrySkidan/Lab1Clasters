@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
 				if (buf == -1) 
 				{
-					double diff = (MPI_Wtime() - t1) * powf(0.9,n/2);
+					double diff = (MPI_Wtime() - t1) * powf(0.9,n);
 					buf = sum;
 
 					notUsedBuf[countOfNotUsedBuf] = i;
