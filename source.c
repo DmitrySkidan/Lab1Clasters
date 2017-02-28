@@ -1,19 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <mpi.h>
 #include <math.h>
 #include <time.h>
-
-void addElementToArray(int **arrayOf, int n, int element) {
-	int *copyarray = (int*)malloc(sizeof(int)*(n));
-	for (int i = 0; i < n - 1; i++) {
-		copyarray[i] = (*arrayOf)[i];
-	}
-	copyarray[n - 1] = element;
-	free(*arrayOf);
-	*arrayOf = copyarray;
-}
+#include <stdbool.h>
 
 bool checkIfProccesUsing(int *notUsedArray, int count, int process) {
 	for (int i = 0; i < count; i++) {
@@ -36,16 +26,12 @@ int main(int argc, char *argv[]) {
 	const int TAG_NUMBERS = 1;
 	const int TAG_SUM = 2;
 	const int TAG_IS_EXIT = 3;
-	const int TAG_IS_EXIT_DONE = 4;
 
 	int rank;
 	int n = 0;
 
-	int countOfUsage = 0;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-	MPI_Comm_size(MPI_COMM_WORLD, &n); 
-
-	// äîáàâèòü ïðîâåðêó, äîáàâèòü ãåíåðàöèþ, ïîëó÷åíèå àðãóìåíòà ñî ñòðîêè
+	MPI_Comm_size(MPI_COMM_WORLD, &n);
 
 	if (n == 1) 
 	{
@@ -54,8 +40,8 @@ int main(int argc, char *argv[]) {
 
 	if (rank == 0) // MAIN Process
 	{
-		int arrayCount = 100;
-		int *arr = (int*)malloc(sizeof(int)*arrayCount);
+		int arrayCount = 5;
+		int *arr = (int*)malloc(arrayCount*sizeof(int));
 
 		for (int i=0;i<arrayCount;i++) {
 			arr[i] = rand() % 100 + 1;
@@ -70,10 +56,10 @@ int main(int argc, char *argv[]) {
 			int realCount = count;
 			if (i + 1 == n) 
 				realCount = countInLast;
-			int *arrayNum = (int*)malloc(sizeof(int));
-			int counterForArrayNum = 1;
-			while (counterForArrayNum != realCount + 1) {
-				addElementToArray(&arrayNum, counterForArrayNum, arr[index]);
+			int *arrayNum = (int*)malloc(sizeof(int)*realCount);
+			int counterForArrayNum = 0;
+			while (counterForArrayNum != realCount) {
+				arrayNum[counterForArrayNum] = arr[index];
 				index += 1;
 				counterForArrayNum += 1;
 			}
@@ -81,10 +67,13 @@ int main(int argc, char *argv[]) {
 			MPI_Send(&isExit, 1, MPI_INT, i, TAG_IS_EXIT, MPI_COMM_WORLD);
 			MPI_Send(&realCount, 1, MPI_INT, i, TAG_NUMBERS_COUNT, MPI_COMM_WORLD);
 			MPI_Send(arrayNum, realCount, MPI_INT, i, TAG_NUMBERS, MPI_COMM_WORLD);
+
+			free(arrayNum);
 		}
-		
+		free(arr);
+
 		int buf = -1;
-		int *notUsedBuf = (int*)malloc(sizeof(int));
+		int *notUsedBuf = (int*)malloc((n-1)*sizeof(int));
 		int countOfNotUsedBuf = 0;
 		while (!isExit) {
 			for (int i = 1; i < n; i++) 
@@ -103,8 +92,8 @@ int main(int argc, char *argv[]) {
 				{
 					buf = sum;
 
+					notUsedBuf[countOfNotUsedBuf] = i;
 					countOfNotUsedBuf += 1;
-					addElementToArray(&notUsedBuf,countOfNotUsedBuf,i);
 
 					if (countOfNotUsedBuf == n - 1) 
 					{
@@ -120,16 +109,18 @@ int main(int argc, char *argv[]) {
 				}
 				else 
 				{
-					int *sumArray = (int*)malloc(sizeof(int));
 					int countForSum = 2;
-					addElementToArray(&sumArray,1,buf);
-					addElementToArray(&sumArray,2,sum);
+					int *sumArray = (int*)malloc(countForSum*sizeof(int));
+					
+					sumArray[0] = buf;
+					sumArray[1] = sum;
 
 					MPI_Send(&isExit, 1, MPI_INT, i, TAG_IS_EXIT, MPI_COMM_WORLD);
 					MPI_Send(&countForSum, 1, MPI_INT, i, TAG_NUMBERS_COUNT, MPI_COMM_WORLD);
 					MPI_Send(sumArray, countForSum, MPI_INT, i, TAG_NUMBERS, MPI_COMM_WORLD);
 
 					buf = -1;
+					free(sumArray);
 				}
 			}
 		}
@@ -139,7 +130,7 @@ int main(int argc, char *argv[]) {
 		while (true) { //ADDITIONAL PROCESS
 			int countNum = 0;
 			bool isExit;
-		    int *arrayNum = (int*)malloc(sizeof(int));
+		    
 
 			MPI_Recv(&isExit, 1, MPI_INT, 0, TAG_IS_EXIT, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
 			if (isExit) {
@@ -147,13 +138,14 @@ int main(int argc, char *argv[]) {
 			}
 
 			MPI_Recv(&countNum, 1, MPI_INT, 0, TAG_NUMBERS_COUNT, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
+			int *arrayNum = (int*)malloc(countNum*sizeof(int));
 			MPI_Recv(arrayNum, countNum, MPI_INT, 0, TAG_NUMBERS, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
 			
 			int sum = 0;
 			for (int i = 0; i < countNum; i++) {
 				sum += arrayNum[i];
 			}
-			
+			free(arrayNum);
 			MPI_Send(&sum, 1, MPI_INT, 0, TAG_SUM, MPI_COMM_WORLD);
 			printf("get sum %d from n%d\n", sum, 0);
 		}
