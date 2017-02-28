@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
 
 				if (buf == -1) 
 				{
-					t1 *= powf(0.075,powf(n,2));
+					double diff = (MPI_Wtime() - t1) * powf(0.075,n);
 					buf = sum;
 
 					notUsedBuf[countOfNotUsedBuf] = i;
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]) {
 					{
 						printf("TOTAL SUM IS %d\n", sum);
 						isExit = true;
-						printf( "Elapsed time is %f\n", MPI_Wtime() - t1 );
+						printf( "Elapsed time is %f\n", diff );
 						for (int j = 1; j < n; j++) {
 							MPI_Send(&isExit, 1, MPI_INT, j, TAG_IS_EXIT, MPI_COMM_WORLD);
 						}
