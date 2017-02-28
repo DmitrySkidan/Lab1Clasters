@@ -90,6 +90,7 @@ int main(int argc, char *argv[]) {
 
 				if (buf == -1) 
 				{
+					t1 *= powf(t1,n);
 					buf = sum;
 
 					notUsedBuf[countOfNotUsedBuf] = i;
