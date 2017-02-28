@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 		for (int i=0;i<arrayCount;i++) {
 			arr[i] = rand() % 100 + 1;
 		}
-		clock_t start = clock(), diff;
+		double t1 = MPI_Wtime();
 		bool isExit = false;
 		int count = arrayCount / (n - 1);
 		int countInLast = arrayCount - count*(n - 2);
@@ -99,9 +99,7 @@ int main(int argc, char *argv[]) {
 					{
 						printf("TOTAL SUM IS %d\n", sum);
 						isExit = true;
-						diff = clock() - start;
-						int msec = diff * 1000 / CLOCKS_PER_SEC;
-						printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
+						printf( "Elapsed time is %f\n", MPI_Wtime() - t1 );
 						for (int j = 1; j < n; j++) {
 							MPI_Send(&isExit, 1, MPI_INT, j, TAG_IS_EXIT, MPI_COMM_WORLD);
 						}
