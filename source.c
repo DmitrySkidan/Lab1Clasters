@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 
 	if (rank == 0) // MAIN Process
 	{
-		int arrayCount = 1000;
+		int arrayCount = 100;
 		int *arr = (int*)malloc(arrayCount*sizeof(int));
 
 		for (int i=0;i<arrayCount;i++) {
