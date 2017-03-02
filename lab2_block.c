@@ -43,16 +43,11 @@ if (taskid == MASTER) {
     offset = 0;
     for (dest=1; dest<=numworkers; dest++) {
       rows = (dest <= extra) ? averow+1 : averow; 
-      printf("Sending %d rows to task %d offset=
-%d\n",rows,dest,offset);
-      MPI_Send(&offset, 1, MPI_INT, dest, FROM_MASTER,
-MPI_COMM_WORLD); 
-      MPI_Send(&rows, 1, MPI_INT, dest, FROM_MASTER,
-MPI_COMM_WORLD); 
-      MPI_Send(&a[offset][0], rows*NCA, MPI_DOUBLE, dest,
- 				ROM_MASTER,MPI_COMM_WORLD);  
-      MPI_Send(&b, NCA*NCB, MPI_DOUBLE, dest, FROM_MASTER,
-MPI_COMM_WORLD); 
+      printf("Sending %d rows to task %d offset=%d\n",rows,dest,offset);
+      MPI_Send(&offset, 1, MPI_INT, dest, FROM_MASTER,MPI_COMM_WORLD); 
+      MPI_Send(&rows, 1, MPI_INT, dest, FROM_MASTER,MPI_COMM_WORLD); 
+      MPI_Send(&a[offset][0], rows*NCA, MPI_DOUBLE, dest,ROM_MASTER,MPI_COMM_WORLD);  
+      MPI_Send(&b, NCA*NCB, MPI_DOUBLE, dest, FROM_MASTER,MPI_COMM_WORLD); 
       offset = offset + rows; 
    }
 /* Receive results from worker tasks */
