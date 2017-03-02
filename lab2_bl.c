@@ -46,7 +46,7 @@ if (taskid == MASTER) {
       printf("Sending %d rows to task %d offset=%d\n",rows,dest,offset);
       MPI_Send(&offset, 1, MPI_INT, dest, FROM_MASTER,MPI_COMM_WORLD); 
       MPI_Send(&rows, 1, MPI_INT, dest, FROM_MASTER,MPI_COMM_WORLD); 
-      MPI_Send(&a[offset][0], rows*NCA, MPI_DOUBLE, dest,ROM_MASTER,MPI_COMM_WORLD);  
+      MPI_Send(&a[offset][0], rows*NCA, MPI_DOUBLE, dest,FROM_MASTER,MPI_COMM_WORLD);  
       MPI_Send(&b, NCA*NCB, MPI_DOUBLE, dest, FROM_MASTER,MPI_COMM_WORLD); 
       offset = offset + rows; 
    }
@@ -58,7 +58,7 @@ for (source=1; source<=numworkers; source++) {
 								MPI_COMM_WORLD, &status);  
      	MPI_Recv(&c[offset][0], rows*NCB, MPI_DOUBLE, source,
 FROM_WORKER,MPI_COMM_WORLD, &status);
-	    printf("Received results from task %d\n", id); 
+	    printf("Received results from task %d\n", taskid); 
 } 
 /* Print results */ 
 printf("****\n");
@@ -72,7 +72,10 @@ printf("\n********\n");
 printf ("Done.\n"); 
 }
 /******** worker task *****************/
-else{ /* if (taskid > MASTER) */
+else{ /* if (task
+
+
+> MASTER) */
     MPI_Recv(&offset, 1, MPI_INT, MASTER, FROM_MASTER, MPI_COMM_WORLD,
 								   &status); 
     MPI_Recv(&rows, 1, MPI_INT, MASTER, FROM_MASTER, MPI_COMM_WORLD, &status); 
