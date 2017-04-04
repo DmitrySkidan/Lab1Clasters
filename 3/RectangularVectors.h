@@ -6,24 +6,25 @@
 //----------------------------------------------------------------------------------------
 class RectangularVectors
 {
+    using namespace std;
 public:
-    static std::vector<std::vector<double> > ReturnRectangularDoubleVector(int size1, int size2)
+    static vector<vector<double> > ReturnRectangularDoubleVector(int size1, int size2)
     {
-        std::vector<std::vector<double> > newVector(size1);
+        vector<vector<double> > newVector(size1);
         for (int vector1 = 0; vector1 < size1; vector1++)
         {
-            newVector[vector1] = std::vector<double>(size2);
+            newVector[vector1] = vector<double>(size2);
         }
 
         return newVector;
     }
 
-    static std::vector<std::vector<int> > ReturnRectangularIntVector(int size1, int size2)
+    static vector<vector<int> > ReturnRectangularIntVector(int size1, int size2)
     {
-        std::vector<std::vector<int> > newVector(size1);
+        vector<vector<int> > newVector(size1);
         for (int vector1 = 0; vector1 < size1; vector1++)
         {
-            newVector[vector1] = std::vector<int>(size2);
+            newVector[vector1] = vector<int>(size2);
         }
 
         return newVector;
